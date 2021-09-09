@@ -1,0 +1,4 @@
+Today we had studied about the concept of Adding players to the game
+Finally we have player and we can control it.
+
+In next class we will see Adding enemies to the game
