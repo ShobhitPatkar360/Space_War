@@ -7,13 +7,32 @@ screen = pygame.display.set_mode((800,600)) #400,300
 pygame.display.set_caption("Space War")
 
 #Setting Icon
-icon = pygame.image.load("robot.png")
+icon = pygame.image.load("robot.png")#Size = 32x32
 pygame.display.set_icon(icon)
+
+#Adding Background
+background = pygame.image.load("background.png")
+
+
+
+#enemy
+enemyImg = pygame.image.load("enemy.png") #size 64x64
+enemyX = 0
+enemyY = 50
+enemyXChange = 1
+enemyYChange = 40
+
+def enemy(x,y):
+    screen.blit(enemyImg, (x,y))
+
+
+
+
 
 #player
 playerImg = pygame.image.load("player.png")
 playerX = 368
-playerY = 268
+playerY = 480
 playerXChange = 0
 
 def player(x,y):
@@ -25,9 +44,12 @@ running = True
 while running:
 
     # Red Green Blue
-    screen.fill((255, 0, 0))
+    screen.fill((100, 50, 37))
 
+    #adding backgroudn
+    screen.blit(background,(0,0))
 
+    enemy(enemyX,enemyY)
     player(playerX,playerY)
 
     #Step 1 => Detect key + "playerXChange" value change
@@ -39,20 +61,35 @@ while running:
             #print("key is pressed")
 
             if event.key == pygame.K_LEFT:
-                playerXChange -= 0.3
+                playerXChange = -0.3
 
             if event.key == pygame.K_RIGHT:
-                playerXChange += 0.3
+                playerXChange = 0.3
 
         if event.type == pygame.KEYUP:
             playerXChange = 0
+
+    #Addig Boundries
+    if playerX <= 0:
+        playerX = 0
+
+    elif playerX >= 736:
+        playerX = 736
+
+    #Enemy movement
+    enemyX = enemyX + enemyXChange
+    if enemyX >= 736:
+        enemyXChange = -1
+        enemyY = enemyY + enemyYChange
+
+    elif enemyX <= 0:
+        enemyXChange = 1
+        enemyY = enemyY + enemyYChange
 
 
 
     #player movement => Step 2 => Change Coordinate
     playerX = playerX + playerXChange
-
-
     pygame.display.update()
 
 """
