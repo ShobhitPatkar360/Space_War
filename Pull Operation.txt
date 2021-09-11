@@ -2,3 +2,4 @@ git init
 git pull http://https://github.com/ShobhitPatkar360/Space_War.git
 git status
 git add .
+exit
