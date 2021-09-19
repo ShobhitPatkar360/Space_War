@@ -1,3 +1,8 @@
+from pygame import mixer
+
+import random
+
+
 import pygame  # Press Ctrl+Alt+L  to look code good
 import math
 pygame.init()
@@ -14,16 +19,50 @@ pygame.display.set_icon(icon)
 # Adding Background
 background = pygame.image.load("background.png")
 
+
+#Adding Background Sound
+mixer.music.load("background.mp3")
+mixer.music.play(-1)
+
+
+
+
+"""
 # enemy
 enemyImg = pygame.image.load("enemy.png")  # size 64x64
-enemyX = 0
-enemyY = 50
+enemyX = random.randint(0,736)
+enemyY = random.randint(50,150)
 enemyXChange = 1
 enemyYChange = 40
+"""
+
+enemyImg = []  # size 64x64
+enemyX = []
+enemyY = []
+enemyXChange = []
+enemyYChange = []
+num_of_enemy = 6
 
 
-def enemy(x, y):
-    screen.blit(enemyImg, (x, y))
+for i in range(num_of_enemy):   # [0,1,2,3,4,5]
+    enemyImg.append(pygame.image.load("enemy.png"))
+    enemyX.append(random.randint(0,736))
+    enemyY.append(random.randint(50,150))
+    enemyXChange.append(1)
+    enemyYChange.append(40)
+
+"""
+what is range(num_of_enemy) ?
+ [0,1,2,3,4,5]
+
+range(100)
+[0,1,2,3, .... , 99]
+
+"""
+
+
+def enemy(x, y,i):
+    screen.blit(enemyImg[i], (x, y))
 
 
 # player
@@ -45,12 +84,23 @@ bulletXChange = 0
 bulletYChange = -3
 bullet_state = "ready" # fire = we want to show bullet ; ready = we want to hide bullet
 
+#Score Displaying
+score_value = 0
+scoreX = 0
+scoreY = 0
+font = pygame.font.Font("freesansbold.ttf",50)
 
-score = 0
+def show_score(x,y):
+    global score_value
+    score_obj = font.render(  "Score : " + str(score_value ) ,  True  ,  (255,255,255) )
+    screen.blit(score_obj ,(x,y))
+
+
+
 def isCollision(enemyX,enemyY,bulletX,bulletY):
 
     dis = math.sqrt( (math.pow(bulletX-enemyX,2)) + (math.pow(bulletY-enemyY,2)) )
-    if dis < 27:
+    if dis < 30:
         return True
     else:
         return False
@@ -89,6 +139,8 @@ while running:
 
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
+                    bullet_sound = mixer.Sound("laser.wav")
+                    bullet_sound.play()
                     bulletX = playerX
                     bullet_state = "fire"
 
@@ -104,14 +156,30 @@ while running:
         playerX = 736
 
     # Enemy movement
-    enemyX = enemyX + enemyXChange
-    if enemyX >= 736:
-        enemyXChange = -1
-        enemyY = enemyY + enemyYChange
+    for i in range(num_of_enemy): # i = 0,1,2,3,4,5
+        enemyX[i] = enemyX[i] + enemyXChange[i]
+        if enemyX[i] >= 736:
+            enemyXChange[i] = -1
+            enemyY[i] = enemyY[i] + enemyYChange[i]
 
-    elif enemyX <= 0:
-        enemyXChange = 1
-        enemyY = enemyY + enemyYChange
+        elif enemyX[i] <= 0:
+            enemyXChange[i] = 1
+            enemyY[i] = enemyY[i] + enemyYChange[i]
+
+        # Collion Management
+        collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
+        if collision:
+            explosion_sound = mixer.Sound("laser.wav")
+            explosion_sound.play()
+            bullet_state = "ready"
+            bulletY = 480
+            score_value = score_value + 1
+            enemyX[i] = random.randint(0, 736)
+            enemyY[i] = random.randint(50, 150)
+            # print("Score : " + str(score))  # print() support concatantion of  only string
+
+        enemy(enemyX[i], enemyY[i] ,i)
+
     # player movement => Step 2 => Change Coordinate
     playerX = playerX + playerXChange
 
@@ -125,21 +193,13 @@ while running:
         fire_bullet(bulletX,bulletY)
         bulletY = bulletY + bulletYChange
 
-    #Collion Management
-    collision = isCollision(enemyX,enemyY,bulletX,bulletY)
-    if collision:
-        bullet_state = "ready"
-        bulletY = 480
-        score = score + 1
-        enemyX = 0
-        enemyY = 50
-        print("Score : "+str(score)) #print() support concatantion of  only string
 
 
 
 
 
-    enemy(enemyX, enemyY)
+
+    show_score(scoreX,scoreY)
     player(playerX, playerY)
     pygame.display.update()
 
