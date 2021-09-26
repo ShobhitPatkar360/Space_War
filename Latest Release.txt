@@ -1,8 +1,0 @@
-Today we had studied
-
-1.Concept of adding boundries to the game
-  -> we had used if to check that our player had gone out or not then we makes it inside boundary
-
-2.We had added the enemy and set its motion of moving left and right. It also comes down (enemyX = enemyX + enemyXChange) when it strikes the boundary.
-
-3.We had also added background to the game that gives realastic look.
