@@ -23,7 +23,7 @@ background = pygame.image.load("background.png")
 
 # Adding Background Sound
 mixer.music.load("background.mp3")
-#mixer.music.play(-1)
+mixer.music.play(-1)
 
 """
 # enemy
@@ -117,6 +117,7 @@ def game_over():
     end_obj = end_font.render("GAME OVER", True, (255, 255, 255))
     screen.blit(end_obj, (150, 400))
     pygame.display.update()
+    mixer.music.stop()
     end_sound = mixer.Sound("ghost.wav")
     end_sound.play()
 
